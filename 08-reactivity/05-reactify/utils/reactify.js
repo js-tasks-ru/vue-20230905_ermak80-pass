@@ -1,4 +1,5 @@
-import { computed } from 'vue';
+import { forEach } from 'lodash';
+import { computed, isRef } from 'vue';
 
 /**
  * @template T
@@ -7,5 +8,15 @@ import { computed } from 'vue';
  */
 export function reactify(func) {
   // ...
-  // return () => computed(() => {});
+
+  return (...arg)=>{return computed( ()=>{ 
+    let adaptiveArgs = []
+    for(let a of arg){
+      if(isRef(a)) a = a.value  
+      adaptiveArgs.push(a)
+    } 
+    return func(...adaptiveArgs) 
+  } 
+  )};
+
 }
